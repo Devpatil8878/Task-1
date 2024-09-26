@@ -30,12 +30,13 @@ function generateMatrix() {
         for (let j = 0; j < column; j++) {
             const inputBox = document.createElement('input');
             inputBox.type = 'number';
-            inputBox.value = 0; 
+            inputBox.style = 'margin-bottom: 5px; width: 3rem';
+            // inputBox.value = 0; 
             inputBox.oninput = function () {
-                matrix[i][j] = parseInt(inputBox.value) || 0; 
+                matrix[i][j] = parseInt(inputBox.value); 
             };
 
-            matrix[i][j] = 0; 
+            // matrix[i][j] = 0; 
             rowDiv.appendChild(inputBox);
         }
         container.appendChild(rowDiv);
