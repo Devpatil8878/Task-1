@@ -1,3 +1,16 @@
+//edge cases:
+
+//if the maximum element is either on the left most index or right most index (0 or size-1)
+//then we will end up with getting an garbage value of left or right element
+//so that, we print "No left element" when the max element is on first index of any row, and "No right element"
+// when the max element is on the last index on any row
+
+//if the length of rows in only 1, then we won't have left and right values, so in that case we only the 
+//value of max element and print "No left value" and "No right value"
+
+//if all the elements are same, then it will take the first value as the maximum value and will print left 
+//value as "No left element" because it will take the first index as max elementd
+
 let max = -Infinity;
 let maxInd = { row: -1, column: -1 };
 let matrix = [];
