@@ -1,71 +1,61 @@
-//edge cases:
-
-//if the maximum element is either on the left most index or right most index (0 or size-1)
-//then we will end up with getting an garbage value of left or right element
-//so that, we print "No left element" when the max element is on first index of any row, and "No right element"
-// when the max element is on the last index on any row
-
-//if the length of rows in only 1, then we won't have left and right values, so in that case we only the 
-//value of max element and print "No left value" and "No right value"
-
-//if all the elements are same, then it will take the first value as the maximum value and will print left 
-//value as "No left element" because it will take the first index as max elementd
-
-let max = -Infinity;
-let maxInd = { row: -1, column: -1 };
-let matrix = [];
-
 function generateMatrix() {
-    const row = parseInt(document.getElementById('rows').value);
-    const column = parseInt(document.getElementById('columns').value);
-    const container = document.getElementById('matrixContainer');
+    const rows = document.getElementById('rows').value;
+    const columns = document.getElementById('columns').value;
+    const matrixContainer = document.getElementById('matrixContainer');
+    
+    matrixContainer.innerHTML = '';
 
-    container.innerHTML = '';
-    matrix = [];
-
-    for (let i = 0; i < row; i++) {
+    for (let i = 0; i < rows; i++) {
         const rowDiv = document.createElement('div');
-        matrix[i] = [];
+        rowDiv.classList.add('matrix-row');
 
-        for (let j = 0; j < column; j++) {
-            const inputBox = document.createElement('input');
-            inputBox.type = 'number';
-            inputBox.style = 'margin-bottom: 5px; width: 3rem';
-            // inputBox.value = 0; 
-            inputBox.oninput = function () {
-                matrix[i][j] = parseInt(inputBox.value); 
-            };
-
-            // matrix[i][j] = 0; 
-            rowDiv.appendChild(inputBox);
+        for (let j = 0; j < columns; j++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.classList.add('matrix-cell');
+            input.setAttribute('oninput', 'this.value = this.value.replace(/[^0-9]/g, "")'); // Restrict input to numbers
+            rowDiv.appendChild(input);
         }
-        container.appendChild(rowDiv);
+
+        matrixContainer.appendChild(rowDiv);
     }
 }
 
 function generateResult() {
-    const result = document.getElementById('result');
+    const rows = document.getElementById('matrixContainer').getElementsByClassName('matrix-row');
+    let max = Number.MIN_SAFE_INTEGER;
+    let maxRow = -1;
+    let maxCol = -1;
 
-    const rows = matrix.length;
-    const columns = matrix[0].length;
-    max = -Infinity;
-    maxInd = { row: -1, column: -1 };
-
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < columns; j++) {
-            if (matrix[i][j] > max) {
-                max = matrix[i][j];
-                maxInd = { row: i, column: j };
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByClassName('matrix-cell');
+        for (let j = 0; j < cells.length; j++) {
+            const cellValue = parseInt(cells[j].value, 10);
+            if (cellValue > max) {
+                max = cellValue;
+                maxRow = i;
+                maxCol = j;
             }
         }
     }
 
-    const left = maxInd.column > 0 ? matrix[maxInd.row][maxInd.column - 1] : "No left element";
-    const right = maxInd.column < columns - 1 ? matrix[maxInd.row][maxInd.column + 1] : "No right element";
+    let leftValue = 'No left value';
+    let rightValue = 'No right value';
+    
+    if (maxRow !== -1) {
+        if (maxCol > 0) {
+            leftValue = rows[maxRow].getElementsByClassName('matrix-cell')[maxCol - 1].value || 'No left value';
+        }
+        
+        if (maxCol < rows[maxRow].getElementsByClassName('matrix-cell').length - 1) {
+            rightValue = rows[maxRow].getElementsByClassName('matrix-cell')[maxCol + 1].value || 'No right value';
+        }
+    }
 
-    result.innerHTML = `
-        <p>Max element: ${max}</p>
-        <p>Left element: ${left}</p>
-        <p>Right element: ${right}</p>
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+        <p>Maximum Value: ${max === Number.MIN_SAFE_INTEGER ? 'No values entered' : max}</p>
+        <p>Left Value of Maximum: ${leftValue}</p>
+        <p>Right Value of Maximum: ${rightValue}</p>
     `;
 }
